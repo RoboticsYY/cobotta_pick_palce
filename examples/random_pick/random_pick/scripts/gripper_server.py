@@ -26,7 +26,7 @@ class CobottaGripperAction(object):
   _feedback = control_msgs.msg.GripperCommandFeedback()
   _result = control_msgs.msg.GripperCommandResult()
 
-  def __init__(self, namespace="/cobotta/", action_name = "gripper_cmd", service_name = "/bcap_service", release=False, controller=""):
+  def __init__(self, namespace="/cobotta/", action_name = "gripper_action", service_name = "/bcap_service", release=False, controller=""):
     self._action_name = namespace + action_name
     rospy.loginfo("Gripper server name: {}".format(self._action_name))
     self._as = actionlib.SimpleActionServer(self._action_name, control_msgs.msg.GripperCommandAction, 
@@ -75,7 +75,7 @@ class CobottaGripperAction(object):
       js.effort += [0.0, 0.0]
       js.velocity += [0.0, 0.0]
       if self._open:
-        js.position += [0.015, 0.015]
+        js.position += [0.015, -0.015]
       else:
         js.position += [0.0, 0.0]
       self._pub.publish(js)
@@ -249,6 +249,6 @@ if __name__ == "__main__":
   rospy.init_node("cobotta_gripper")
   ns = rospy.get_namespace()
   rospy.loginfo("Gripper node namespace: {}".format(ns))
-  server = CobottaGripperAction(namespace=ns, action_name="gripper_cmd", service_name="/bcap_service", 
+  server = CobottaGripperAction(namespace=ns, action_name="gripper_action", service_name="/bcap_service", 
                                 release=args.release, controller=args.controller)
   server.start()
