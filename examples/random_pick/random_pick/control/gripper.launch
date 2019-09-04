@@ -3,11 +3,15 @@
   <!-- For releasing controller handle -->
   <arg name="release" default="false" />
   <arg name="controller_handle" default="" />
+    <!-- Override robot_name argument -->
+  <arg name="robot_name" default="cobotta" />
 
-  <node if="$(arg release)" name="cobotta_gripper" pkg="cobotta_pick_place" type="gripper_server.py" required="true" 
+  <node if="$(arg release)" ns="/$(arg robot_name)" name="cobotta_gripper" pkg="cobotta_pick_place" 
+        type="gripper_server.py" required="true" 
         args="--release  --controller $(arg controller_handle)" output="screen"/>
 
-  <node unless="$(arg release)" name="cobotta_gripper" pkg="cobotta_pick_place" type="gripper_server.py" required="true" 
+  <node unless="$(arg release)" ns="/$(arg robot_name)" name="cobotta_gripper" pkg="cobotta_pick_place" 
+        type="gripper_server.py" required="true" 
         output="screen"/>
 
 </launch>
