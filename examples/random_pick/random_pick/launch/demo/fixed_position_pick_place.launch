@@ -1,0 +1,28 @@
+<launch>
+
+  <!-- Parameters for cobotta robot -->
+  <arg name="frame_id" value="world" />
+  <arg name="support_surface" value="operation_surface" />
+  <arg name="group_name" value="arm" />
+  <arg name="finger_joints" value="joint_gripper joint_gripper_mimic" />
+  <arg name="finger_open_dists" value="0.015 -0.015" />
+  <arg name="object_xyz" value="0.191 -0.050 0.018" />
+  <arg name="grasp_xyz" value="0.191 -0.050 0.018" />
+  <arg name="grasp_rpy" value="3.1415 0.0 -0.7853" />
+  <arg name="place_xyz" value="0.191 0.050 0.018" />
+  <arg name="place_rpy" value="3.1415 0.0 -0.7853" /> 
+
+  <node name="pick_place" pkg="cobotta_pick_place" type="fixed_position_pick_place" output="screen" required="true">
+    <param name="frame_id" value="$(arg frame_id)"/>
+    <param name="support_surface" value="$(arg support_surface)"/>
+    <param name="group_name" value="$(arg group_name)"/>
+    <param name="finger_joints" value="$(arg finger_joints)"/>
+    <param name="finger_open_dists" value="$(arg finger_open_dists)"/>
+    <param name="object_xyz" value="$(arg object_xyz)"/>
+    <param name="grasp_xyz" value="$(arg grasp_xyz)"/>
+    <param name="grasp_rpy" value="$(arg grasp_rpy)"/>
+    <param name="place_xyz" value="$(arg place_xyz)"/>
+    <param name="place_rpy" value="$(arg place_rpy)"/>
+  </node>
+
+</launch>

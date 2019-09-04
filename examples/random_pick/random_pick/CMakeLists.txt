@@ -50,9 +50,13 @@ include_directories(SYSTEM ${THIS_PACKAGE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${E
 
 option(BUILD_RANDOM_PICK "build random_pick app" OFF)
 if(BUILD_RANDOM_PICK STREQUAL "ON")
-  add_executable(${PROJECT_NAME} src/random_pick.cpp)
-  target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-  install(TARGETS ${PROJECT_NAME} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  add_executable(random_pick src/random_pick.cpp)
+  target_link_libraries(random_pick ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+  install(TARGETS random_pick DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 endif()
+
+add_executable(fixed_position_pick_place src/fixed_position_pick_place.cpp)
+target_link_libraries(fixed_position_pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS fixed_position_pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(PROGRAMS scripts/gripper_server.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
