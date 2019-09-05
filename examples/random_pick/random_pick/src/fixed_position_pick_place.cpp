@@ -100,16 +100,16 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group, std::strin
   grasps[0].pre_grasp_approach.direction.header.frame_id = frame_id;
   /* Direction is set as positive x axis */
   grasps[0].pre_grasp_approach.direction.vector.z = -1.0;
-  grasps[0].pre_grasp_approach.min_distance = 0.05;
-  grasps[0].pre_grasp_approach.desired_distance = 0.10;
+  grasps[0].pre_grasp_approach.min_distance = 0.01;
+  grasps[0].pre_grasp_approach.desired_distance = 0.03;
 
   // Setting post-grasp retreat
   /* Defined with respect to frame_id */
   grasps[0].post_grasp_retreat.direction.header.frame_id = frame_id;
   /* Direction is set as positive z axis */
   grasps[0].post_grasp_retreat.direction.vector.z = 1.0;
-  grasps[0].post_grasp_retreat.min_distance = 0.05;
-  grasps[0].post_grasp_retreat.desired_distance = 0.10;
+  grasps[0].post_grasp_retreat.min_distance = 0.01;
+  grasps[0].post_grasp_retreat.desired_distance = 0.03;
 
   // Setting posture of eef before grasp
   openGripper(grasps[0].pre_grasp_posture, finger_joints, open_dists);
@@ -150,16 +150,16 @@ void place(moveit::planning_interface::MoveGroupInterface& group, std::string& f
   place_location[0].pre_place_approach.direction.header.frame_id = frame_id;
   /* Direction is set as negative z axis */
   place_location[0].pre_place_approach.direction.vector.z = -1.0;
-  place_location[0].pre_place_approach.min_distance = 0.05;
-  place_location[0].pre_place_approach.desired_distance = 0.10;
+  place_location[0].pre_place_approach.min_distance = 0.01;
+  place_location[0].pre_place_approach.desired_distance = 0.03;
 
   // Setting post-grasp retreat
   /* Defined with respect to frame_id */
   place_location[0].post_place_retreat.direction.header.frame_id = frame_id;
   /* Direction is set as negative y axis */
   place_location[0].post_place_retreat.direction.vector.z = 1.0;
-  place_location[0].post_place_retreat.min_distance = 0.05;
-  place_location[0].post_place_retreat.desired_distance = 0.10;
+  place_location[0].post_place_retreat.min_distance = 0.01;
+  place_location[0].post_place_retreat.desired_distance = 0.03;
 
   // Setting posture of eef after placing object
   /* Similar to the pick case */
@@ -187,7 +187,7 @@ void addCollisionObjects(moveit::planning_interface::PlanningSceneInterface& pla
   collision_objects[0].primitives.resize(1);
   collision_objects[0].primitives[0].type = collision_objects[1].primitives[0].SPHERE;
   collision_objects[0].primitives[0].dimensions.resize(1);
-  collision_objects[0].primitives[0].dimensions[0] = 0.04;
+  collision_objects[0].primitives[0].dimensions[0] = 0.01;
 
   /* Define the pose of the object. */
   collision_objects[0].primitive_poses.resize(1);

@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import rospy
-import IPython
 import argparse
 import actionlib
 import control_msgs.msg
@@ -86,24 +85,23 @@ class CobottaGripperAction(object):
     """
     Gripper action server callback
     """
-    pass
-    # if self._init:
-    #   if goal.command.position != 0:
-    #     if self.open_gripper():
-    #       self._result.reached_goal = True
-    #       self._as.set_succeeded(self._result)
-    #     else:
-    #       self._result.reached_goal = False
-    #       self._as.set_aborted(self._result)
-    #   else:
-    #     if self.close_gripper():
-    #       self._result.reached_goal = True
-    #       self._as.set_succeeded(self._result)
-    #     else:
-    #       self._result.reached_goal = False
-    #       self._as.set_aborted(self._result)
-    # else:
-    #   rospy.logerr("Hitbot action server not initialized.")
+    if self._init:
+      if goal.command.position != 0:
+        if self.open_gripper():
+          self._result.reached_goal = True
+          self._as.set_succeeded(self._result)
+        else:
+          self._result.reached_goal = False
+          self._as.set_aborted(self._result)
+      else:
+        if self.close_gripper():
+          self._result.reached_goal = True
+          self._as.set_succeeded(self._result)
+        else:
+          self._result.reached_goal = False
+          self._as.set_aborted(self._result)
+    else:
+      rospy.logerr("Gripper action server not initialized.")
 
   def powerup_gripper(self):
     try:
