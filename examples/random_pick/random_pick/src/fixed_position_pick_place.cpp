@@ -288,19 +288,30 @@ int main(int argc, char** argv)
   addCollisionObjects(planning_scene_interface, frame_id, object_position);
 
   /* Move to the home pose */
-  // moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   group.setStartStateToCurrentState();
-  // group.setNamedTarget("home");
-  // if (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
-  // {
-  //   if (group.execute(my_plan) != moveit::planning_interface::MoveItErrorCode::SUCCESS)
-  //     return 1;
-  // }
+  group.setNamedTarget("home");
+  if (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+  {
+    if (group.execute(my_plan) != moveit::planning_interface::MoveItErrorCode::SUCCESS)
+      return 1;
+  }
 
   /* Wait a bit for ROS things to initialize */
   ros::WallDuration(1.0).sleep();
 
   pick(group, frame_id, support_surface, finger_joint_vect, finger_open_dist_vect, grasp_position, grasp_orientation);
+
+  ros::WallDuration(1.0).sleep();
+
+  /* Move to the home pose */
+  group.setStartStateToCurrentState();
+  group.setNamedTarget("home");
+  if (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+  {
+    if (group.execute(my_plan) != moveit::planning_interface::MoveItErrorCode::SUCCESS)
+      return 1;
+  }
 
   ros::WallDuration(1.0).sleep();
 
