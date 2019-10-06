@@ -54,32 +54,32 @@
 static std::mutex m_;
 static bool isGrasping = false;
 
-static const char target_frame_id[] = "base";
+static const char target_frame_id[] = "base_link";
 /* place position in the target_frame_id*/
-static std::vector<double> place_position = { -0.45, -0.30, 0.25 };
+static std::vector<double> place_position = { 0.0, 0.1728, 0.05 };
 /* place position in joint values*/
-static std::vector<double> joint_values_place = { 0.3857, -1.3737, 1.8270, -2.0249, -1.5708, 1.9569 };
+static std::vector<double> joint_values_place = {1.8012, 0.1329, 2.1033, 0.0443, 0.8975, 1.77 };
 /* pre-pick position in joint values*/
-static std::vector<double> joint_values_pick = { 1.3067, -1.3066, 1.4736, -1.7380, -1.5708, 0 };
+static std::vector<double> joint_values_pick = { 0.0, 0.6130, 1.5365, 0.0, 1.0276, 0.0 };
 
 /* gripper parameters: */
-static std::vector<std::string> finger_joint_names = { "hitbot_base_finger0_joint", "hitbot_base_finger1_joint" };
-static std::vector<double> finger_positions_open = { -0.01, 0.01 };
+static std::vector<std::string> finger_joint_names = { "joint_gripper", "joint_gripper_mimic" };
+static std::vector<double> finger_positions_open = { 0.015, -0.015 };
 static std::vector<double> finger_positions_close = { 0.0, 0.0 };
-static double approach_distance = 0.1;
+static double approach_distance = 0.03;
 /* end-effector yaw offset*/
-static double eef_yaw_offset = M_PI / 4;
+static double eef_yaw_offset = 0.0;
 /* offset from the gripper base (finger root) to the parent link of eef (end of
  * robot arm)*/
-static double eef_offset = 0.154;
+static double eef_offset = 0.059;
 
 /* work table parameters: */
 /* workspace boundy, described as a cube {x_min, x_max, y_min, y_max, z_min,
  * z_max}
  * in metres in the target_frame_id*/
-static std::vector<double> boundry = { -0.3, 0.1, -0.7, -0.35, -0.15, 0.05 };
+static std::vector<double> boundry = { 0.1, 0.4, -0.2, 0.2, 0.025, 0.2 };
 /* minimum height in metres (altitude above the work table) of object to grasp*/
-static double object_height_min = 0.028;
+static double object_height_min = 0.05;
 
 /* grasp parameters*/
 /* minimum score*/
@@ -87,11 +87,11 @@ static const float kThresholdScore = 1;
 /* expected grasp approach direction*/
 static tf2::Vector3 grasp_approach(0, 0, -1);
 /* maximum approach deviation*/
-static double approach_deviation = M_PI / 9;
+static double approach_deviation = M_PI / 6;
 /* grasp position offset introduced by the system (e.g. camera, hand-eye
  * calibration, etc.)
  * {x_offset, y_offset} in metres in the target_frame_id*/
-static std::vector<double> grasp_position_offset = { 0.006, 0.003 };
+static std::vector<double> grasp_position_offset = { 0.0, 0.0 };
 /* grasp candidates*/
 static std::vector<std::pair<moveit_msgs::Grasp, geometry_msgs::Point>> grasp_candidates;
 
@@ -420,15 +420,15 @@ int main(int argc, char** argv)
   spinner.start();
 
   ros::WallDuration(1.0).sleep();
-  moveit::planning_interface::MoveGroupInterface group("ur5_arm");
+  moveit::planning_interface::MoveGroupInterface group("arm");
   group.setPlanningTime(45.0);
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
   ros::WallDuration(1.0).sleep();
   reset_joint(group, joint_values_place);
 
-  geometry_msgs::PoseStamped pose = group.getCurrentPose("tool0");
-  std::vector<double> rpy = group.getCurrentRPY("tool0");
+  geometry_msgs::PoseStamped pose = group.getCurrentPose("gripper_base");
+  std::vector<double> rpy = group.getCurrentRPY("gripper_base");
   ROS_INFO_STREAM("*********** tool0 pose " << pose);
   ROS_INFO_STREAM("*********** tool0 rpy " << rpy[0] << ", " << rpy[1] << ", " << rpy[2]);
 
@@ -438,7 +438,7 @@ int main(int argc, char** argv)
   moveit_msgs::Grasp grasp;
   gpd::GraspConfig gpd_grasp;
   geometry_msgs::Pose obj_pose;
-  while (ros::ok)
+  while (ros::ok())
   {
     while (grasp_candidates.empty())
     {
@@ -470,6 +470,7 @@ int main(int argc, char** argv)
     if (ret != moveit::planning_interface::MoveItErrorCode::SUCCESS)
     {
       ROS_WARN_STREAM("PICK RETURN code " << ret);
+      isGrasping = false;
       continue;
     }
 
