@@ -9,8 +9,8 @@
   <arg name="object_xyz" value="0.191 -0.050 0.0" />
   <arg name="grasp_xyz" value="0.191 -0.050 0.10" />
   <arg name="grasp_rpy" value="0.0 3.1415 0.0" />
-  <arg name="place_xyz" value="0.191 -0.050 0.10" />
-  <arg name="place_rpy" value="0.0 3.1415 0.0" /> 
+  <arg name="place_xyz" value="0.191 -0.050 0.0" />
+  <arg name="place_rpy" value="0.0 0.0 0.0" /> 
 
   <node name="pick_place" pkg="cobotta_pick_place" type="fixed_position_pick_place" output="screen" required="true">
     <param name="frame_id" value="$(arg frame_id)"/>

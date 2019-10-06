@@ -166,7 +166,7 @@ void place(moveit::planning_interface::MoveGroupInterface& group, std::string& f
   openGripper(place_location[0].post_place_posture, finger_joints, open_dists);
 
   // Set support surface as table2.
-  group.setSupportSurfaceName("operation_surface");
+  group.setSupportSurfaceName(support_surface);
   // Call place to place the object using the place locations given.
   group.place("object", place_location);
 }
