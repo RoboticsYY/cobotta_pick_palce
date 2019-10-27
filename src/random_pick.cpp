@@ -56,7 +56,7 @@ static bool isGrasping = false;
 
 static const char target_frame_id[] = "base_link";
 /* place position in the target_frame_id*/
-static std::vector<double> place_position = { 0.0, 0.1728, 0.05 };
+static std::vector<double> place_position = { 0.0, 0.2, 0.2 };
 /* place position in joint values*/
 static std::vector<double> joint_values_place = {1.8012, 0.1329, 2.1033, 0.0443, 0.8975, 1.77 };
 /* pre-pick position in joint values*/
@@ -68,10 +68,10 @@ static std::vector<double> finger_positions_open = { 0.015, -0.015 };
 static std::vector<double> finger_positions_close = { 0.0, 0.0 };
 static double approach_distance = 0.03;
 /* end-effector yaw offset*/
-static double eef_yaw_offset = 0.0;
+static double eef_yaw_offset = M_PI / 2;
 /* offset from the gripper base (finger root) to the parent link of eef (end of
  * robot arm)*/
-static double eef_offset = 0.059;
+static double eef_offset = 0.037;
 
 /* work table parameters: */
 /* workspace boundy, described as a cube {x_min, x_max, y_min, y_max, z_min,
@@ -79,7 +79,7 @@ static double eef_offset = 0.059;
  * in metres in the target_frame_id*/
 static std::vector<double> boundry = { 0.1, 0.4, -0.2, 0.2, 0.025, 0.2 };
 /* minimum height in metres (altitude above the work table) of object to grasp*/
-static double object_height_min = 0.05;
+static double object_height_min = 0.03;
 
 /* grasp parameters*/
 /* minimum score*/
@@ -91,7 +91,7 @@ static double approach_deviation = M_PI / 6;
 /* grasp position offset introduced by the system (e.g. camera, hand-eye
  * calibration, etc.)
  * {x_offset, y_offset} in metres in the target_frame_id*/
-static std::vector<double> grasp_position_offset = { 0.0, 0.0 };
+static std::vector<double> grasp_position_offset = { 0.001, -0.001 };
 /* grasp candidates*/
 static std::vector<std::pair<moveit_msgs::Grasp, geometry_msgs::Point>> grasp_candidates;
 
@@ -352,7 +352,7 @@ void gpd_cb(const gpd::GraspConfigList::ConstPtr& msg)
 
       std::lock_guard<std::mutex> lock(m_);
       grasp_candidates.clear();
-      grasp_candidates.push_back(std::make_pair(to_moveit(to_grasp, header), to_surface.point));
+      grasp_candidates.push_back(std::make_pair(to_moveit(to_grasp, header), to_top.point));
       break;
     }
     else
@@ -377,7 +377,7 @@ void addCollisionObjects(moveit::planning_interface::PlanningSceneInterface& pla
   collision_objects[0].primitives.resize(1);
   collision_objects[0].primitives[0].type = collision_objects[1].primitives[0].SPHERE;
   collision_objects[0].primitives[0].dimensions.resize(1);
-  collision_objects[0].primitives[0].dimensions[0] = 0.01;
+  collision_objects[0].primitives[0].dimensions[0] = 0.005;
 
   /* Define the pose of the object. */
   collision_objects[0].primitive_poses.resize(1);
@@ -485,7 +485,7 @@ int main(int argc, char** argv)
     if (ret != moveit::planning_interface::MoveItErrorCode::SUCCESS)
     {
       ROS_WARN_STREAM("PLACE RETURN code " << ret);
-      continue;
+      //continue;
     }
 
     // remove object from scene
@@ -497,6 +497,6 @@ int main(int argc, char** argv)
       return moveit::planning_interface::MoveItErrorCode::SUCCESS;
   }
 
-  ros::waitForShutdown();
+  ros::shutdown();
   return 0;
 }
